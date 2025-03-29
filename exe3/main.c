@@ -47,14 +47,15 @@ void process_task(void *p) {
             index = (index + 1) % window_size;
 
             // Evita divisão por 0 no início
-            if (count < window_size) count++;
+            if (count < window_size) {
+                count += 1;
+            }
 
-            // Calcula média
-            float filtered_value = (float)sum / count;
-
-            // Imprime valor filtrado
-            printf("Filtered value: %.2f\n", filtered_value);
-
+            if (count == window_size) {
+                float filtered_value = (float)sum / window_size;
+                printf("Filtered value: %.2f\n", filtered_value);
+            }
+            
             vTaskDelay(pdMS_TO_TICKS(50));
         }
     }
