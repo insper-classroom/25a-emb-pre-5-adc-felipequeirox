@@ -26,14 +26,35 @@ void data_task(void *p) {
 void process_task(void *p) {
     int data = 0;
 
+    const int window_size = 5;
+    int window[5] = {0};
+    int index = 0;
+    int count = 0;
+    int sum = 0;
+
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
-            // implementar filtro aqui!
+            // Remove valor antigo da soma
+            sum -= window[index];
 
+            // Insere novo valor
+            window[index] = data;
 
+            // Adiciona novo valor à soma
+            sum += data;
 
+            // Atualiza índice circular
+            index = (index + 1) % window_size;
 
-            // deixar esse delay!
+            // Evita divisão por 0 no início
+            if (count < window_size) count++;
+
+            // Calcula média
+            float filtered_value = (float)sum / count;
+
+            // Imprime valor filtrado
+            printf("Filtered value: %.2f\n", filtered_value);
+
             vTaskDelay(pdMS_TO_TICKS(50));
         }
     }
