@@ -24,38 +24,27 @@ void data_task(void *p) {
 }
 
 void process_task(void *p) {
+    
     int data = 0;
-
-    const int window_size = 5;
-    int window[5] = {0};
-    int index = 0;
-    int count = 0;
-    int sum = 0;
 
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
-            // Remove valor antigo da soma
-            sum -= window[index];
 
-            // Insere novo valor
-            window[index] = data;
+            soma = data[0] + data[1] + data[2] + data[3] + data[4];
+            printf("%d\n", soma / 5);
 
-            // Adiciona novo valor à soma
-            sum += data;
+            int i = 5;
 
-            // Atualiza índice circular
-            index = (index + 1) % window_size;
-
-            // Evita divisão por 0 no início
-            if (count < window_size) {
-                count += 1;
-            }
-
-            if (count == window_size) {
-                float filtered_value = (float)sum / window_size;
-                printf("Filtered value: %.2f\n", filtered_value);
-            }
+            while(i < size_of(data) - 5) {
             
+                soma += data[i];
+                soma -= data[i - 5];
+
+                printf("%d\n", soma / 5);
+                i++;
+            }
+
+            // deixar esse delay!
             vTaskDelay(pdMS_TO_TICKS(50));
         }
     }
