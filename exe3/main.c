@@ -24,7 +24,7 @@ void data_task(void *p) {
 }
 
 void process_task(void *p) {
-    int window[5] = {0};  
+    static int window[5] = {0};  
     int index = 0;
     int count = 0;
     int soma = 0;
@@ -33,21 +33,15 @@ void process_task(void *p) {
     while (true) {
         if (xQueueReceive(xQueueData, &data, pdMS_TO_TICKS(100))) {
 
-            // Remove o valor antigo da soma
             soma -= window[index];
 
-            // Adiciona o novo valor
             window[index] = data;
+
             soma += data;
 
             index = (index + 1) % 5;
 
-            // Só imprime se já tivermos 5 valores válidos
-            if (count >= 5) {
-                printf("%d\n", soma / 5);
-            } else {
-                count++;
-            }
+            printf("%d\n", soma/5);
 
             vTaskDelay(pdMS_TO_TICKS(50));
         }
